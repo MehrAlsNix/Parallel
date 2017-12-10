@@ -12,6 +12,8 @@
  * @link      http://docblox-project.org
  */
 
+namespace MehrAlsNix\Parallel;
+
 /**
  * Class that represents a named pipe for a Worker.
  *
@@ -24,9 +26,9 @@
  * @license  http://www.opensource.org/licenses/mit-license.php MIT
  * @link     http://docblox-project.org
  */
-class DocBlox_Parallel_WorkerPipe
+class WorkerPipe
 {
-    /** @var DocBlox_Parallel_Worker worker class that is associated */
+    /** @var Worker worker class that is associated */
     protected $worker;
 
     /** @var string Path to the pipe */
@@ -35,9 +37,9 @@ class DocBlox_Parallel_WorkerPipe
     /**
      * Initializes the named pipe.
      *
-     * @param DocBlox_Parallel_Worker $worker Associated worker.
+     * @param Worker $worker Associated worker.
      */
-    public function __construct(DocBlox_Parallel_Worker $worker)
+    public function __construct(Worker $worker)
     {
         $this->worker = $worker;
 
@@ -69,6 +71,8 @@ class DocBlox_Parallel_WorkerPipe
      * Push the worker data back onto the worker and release the pipe.
      *
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function push()
     {
@@ -88,7 +92,7 @@ class DocBlox_Parallel_WorkerPipe
     protected function writePipeContents()
     {
         // push the gathered data onto a name pipe
-        $pipe = fopen($this->path, 'w');
+        $pipe = fopen($this->path, 'wb');
         fwrite(
             $pipe, serialize(
                 array(
@@ -108,7 +112,7 @@ class DocBlox_Parallel_WorkerPipe
      */
     protected function readPipeContents()
     {
-        $pipe = fopen($this->path, 'r+');
+        $pipe = fopen($this->path, 'rb+');
         $result = unserialize(fread($pipe, filesize($this->path)));
         fclose($pipe);
 

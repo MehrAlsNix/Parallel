@@ -1,0 +1,21 @@
+{
+    "name": "mehr-als-nix/parallel",
+    "description": "This package is a port of PhpDumentor/Parallel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "siad007",
+            "email": "siad.ardroumli@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "MehrAlsNix\\Parallel\\": "src"
+        }
+    }
+}

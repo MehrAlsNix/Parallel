@@ -12,6 +12,8 @@
  * @link      http://docblox-project.org
  */
 
+namespace MehrAlsNix\Parallel;
+
 /**
  * Class that represents the execution of a single task within a parallelized
  * frame.
@@ -22,10 +24,10 @@
  * @license  http://www.opensource.org/licenses/mit-license.php MIT
  * @link     http://docblox-project.org
  */
-class DocBlox_Parallel_Worker
+class Worker
 {
     /** @var callback the task to execute for this worker */
-    protected $task = null;
+    protected $task;
 
     /** @var mixed[] A list of argument to pass to the task */
     protected $arguments = array();
@@ -39,14 +41,18 @@ class DocBlox_Parallel_Worker
     /** @var string The error message, if an error occurred */
     protected $error = '';
 
+    /** @var WorkerPipe $pipe */
+    public $pipe;
+
     /**
      * Creates the worker and sets the task to execute optionally including
      * the arguments that need to be passed to the task.
      *
-     * @param callback $task      The task to invoke upon execution.
-     * @param mixed[]  $arguments The arguments to provide to the task.
+     * @param callback $task The task to invoke upon execution.
+     * @param mixed[] $arguments The arguments to provide to the task.
+     * @throws \InvalidArgumentException
      */
-    function __construct($task, array $arguments = array())
+    public function __construct($task, array $arguments = array())
     {
         $this->setTask($task);
         $this->arguments = $arguments;
@@ -55,7 +61,7 @@ class DocBlox_Parallel_Worker
     /**
      * Returns the list of arguments as provided int he constructor.
      *
-     * @see DocBlox_Parallel_Worker::__construct()
+     * @see Worker::__construct()
      *
      * @return mixed[]
      */
@@ -67,7 +73,7 @@ class DocBlox_Parallel_Worker
     /**
      * Returns the task as provided in the constructor.
      *
-     * @see DocBlox_Parallel_Worker::__construct()
+     * @see Worker::__construct()
      *
      * @return callback
      */
@@ -100,14 +106,14 @@ class DocBlox_Parallel_Worker
      *
      * @param int $return_code Recommended to be a positive number
      *
-     * @throw InvalidArgumentException if the code is not a number or negative
+     * @throws \InvalidArgumentException if the code is not a number or negative
      *
      * @return void
      */
     public function setReturnCode($return_code)
     {
         if (!is_numeric($return_code) || ($return_code  < 0)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Expected the return code to be a positive number'
             );
         }
@@ -163,6 +169,7 @@ class DocBlox_Parallel_Worker
      * Invokes the task with the given arguments and processes the output.
      *
      * @return void.
+     * @throws \InvalidArgumentException
      */
     public function execute()
     {
@@ -171,7 +178,7 @@ class DocBlox_Parallel_Worker
             $this->setResult(
                 call_user_func_array($this->getTask(), $this->getArguments())
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->setError($e->getMessage());
             $this->setReturnCode($e->getCode());
         }
@@ -183,17 +190,17 @@ class DocBlox_Parallel_Worker
      * @param callback $task The task to execute when the execute method
      *     is invoked.
      *
-     * @throws InvalidArgumentException if the given argument is not a callback.
+     * @throws \InvalidArgumentException if the given argument is not a callback.
      *
-     * @see DocBlox_Parallel_Worker::__construct()
-     * @see DocBlox_Parallel_Worker::execute()
+     * @see Worker::__construct()
+     * @see Worker::execute()
      *
      * @return void
      */
     protected function setTask($task)
     {
         if (!is_callable($task)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Worker task is not a callable object'
             );
         }
