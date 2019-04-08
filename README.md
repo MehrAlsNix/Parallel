@@ -61,32 +61,37 @@ Examples
 --------
 
 ### Fluent interface
-
-    $mgr = new DocBlox_Parallel_Manager();
+    use MehrAlsNix\Parallel\Manager;
+    use MehrAlsNix\Parallel\Worker;
+    
+    $mgr = new Manager();
     $mgr
-      ->addWorker(new DocBlox_Parallel_Worker(function() { sleep(1); return 'a'; }))
-      ->addWorker(new DocBlox_Parallel_Worker(function() { sleep(1); return 'b'; }))
-      ->addWorker(new DocBlox_Parallel_Worker(function() { sleep(1); return 'c'; }))
-      ->addWorker(new DocBlox_Parallel_Worker(function() { sleep(1); return 'd'; }))
-      ->addWorker(new DocBlox_Parallel_Worker(function() { sleep(1); return 'e'; }))
+      ->addWorker(new Worker(function() { sleep(1); return 'a'; }))
+      ->addWorker(new Worker(function() { sleep(1); return 'b'; }))
+      ->addWorker(new Worker(function() { sleep(1); return 'c'; }))
+      ->addWorker(new Worker(function() { sleep(1); return 'd'; }))
+      ->addWorker(new Worker(function() { sleep(1); return 'e'; }))
       ->execute();
 
-    /** @var DocBlox_Parallel_Worker $worker */
+    /** @var Worker $worker */
     foreach ($mgr as $worker) {
         var_dump($worker->getResult());
     }
 
 ### Array interface
 
-    $mgr = new DocBlox_Parallel_Manager();
-    $mgr[] = new DocBlox_Parallel_Worker(function() { sleep(1); return 'f'; });
-    $mgr[] = new DocBlox_Parallel_Worker(function() { sleep(1); return 'g'; });
-    $mgr[] = new DocBlox_Parallel_Worker(function() { sleep(1); return 'h'; });
-    $mgr[] = new DocBlox_Parallel_Worker(function() { sleep(1); return 'i'; });
-    $mgr[] = new DocBlox_Parallel_Worker(function() { sleep(1); return 'j'; });
+    use MehrAlsNix\Parallel\Manager;
+    use MehrAlsNix\Parallel\Worker;
+    
+    $mgr = new Manager();
+    $mgr[] = new Worker(function() { sleep(1); return 'f'; });
+    $mgr[] = new Worker(function() { sleep(1); return 'g'; });
+    $mgr[] = new Worker(function() { sleep(1); return 'h'; });
+    $mgr[] = new Worker(function() { sleep(1); return 'i'; });
+    $mgr[] = new Worker(function() { sleep(1); return 'j'; });
     $mgr->execute();
 
-    /** @var DocBlox_Parallel_Worker $worker */
+    /** @var Worker $worker */
     foreach ($mgr as $worker) {
         var_dump($worker->getResult());
     }
